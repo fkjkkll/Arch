@@ -354,13 +354,15 @@ public sealed partial class CommandBuffer : IDisposable
 
 #if EVENTS
                 // Entity also exists in add and the set component was added recently
-                if (Adds.Used.Length > i && Adds.Components[Adds.Used[i]].Contains(id))
+                var compType = sparseArray.Type;
+                var compId = compType.Id;
+                if (Adds.Components.Length > compId && Adds.Components[compId] != null && Adds.Components[compId].Contains(id))
                 {
-                    world.OnComponentAdded(entity, sparseArray.Type);
+                    world.OnComponentAdded(entity, compType);
                 }
                 else
                 {
-                    world.OnComponentSet(entity, sparseArray.Type);
+                    world.OnComponentSet(entity, compType);
                 }
 #endif
             }
@@ -456,6 +458,9 @@ public sealed partial class CommandBuffer : IDisposable
 public sealed partial class CommandBuffer
 {
     /// <summary>
+    ///     实际上World里有一个同名函数，内部代码完全一样，只是会抛出事件，这里还要额外写可能有两个原因：
+    ///         1、这个函数较早实现，world那边后面才有的，这里未来得及或者忘了替换
+    ///         2、Add时组件内部数据未初始化具体值，所以想要等到Set再抛出事件，但是world那边的函数是不是也有这个问题呢？
     ///     Adds a list of new components to the <see cref="Entity"/> and moves it to the new <see cref="Archetype"/>.
     /// </summary>
     /// <param name="world">The world to operate on.</param>
