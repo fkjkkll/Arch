@@ -185,12 +185,12 @@ internal class StructuralSparseSet
 
     private void EnsureUsedCapacity(int capacity)
     {
-        // Resize UsedSize array.
-        if (capacity < UsedSize)
+        if (capacity < Used.Length)
         {
             return;
         }
-        Array.Resize(ref Used, UsedSize + 1);
+        var newCapacity = Math.Max(Used.Length * 2, capacity);
+        Array.Resize(ref Used, newCapacity);
     }
 
     /// <summary>

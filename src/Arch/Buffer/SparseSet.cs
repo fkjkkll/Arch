@@ -251,12 +251,12 @@ internal class SparseSet
 
     private void EnsureUsedCapacity(int capacity)
     {
-        // Resize UsedSize array.
-        if (capacity < UsedSize)
+        if (capacity < Used.Length)
         {
             return;
         }
-        Array.Resize(ref Used, UsedSize + 1);
+        var newCapacity = Math.Max(Used.Length * 2, capacity);
+        Array.Resize(ref Used, newCapacity);
     }
 
     /// <summary>
@@ -285,7 +285,7 @@ internal class SparseSet
 
     private void AddSparseArray(ComponentType type)
     {
-        Components[type.Id] = new SparseArray(type, type.Id);
+        Components[type.Id] = new SparseArray(type, Capacity);
 
         Used[UsedSize] = type.Id;
         UsedSize++;
